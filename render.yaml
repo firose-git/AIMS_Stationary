@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: aims-stationary
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn Aims_pro.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.7
