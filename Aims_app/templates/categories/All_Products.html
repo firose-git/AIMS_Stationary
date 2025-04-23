@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% block title %}All Products{% endblock %}
+{% block content %}
+{% load static %}
+
+<style>
+    .products-section {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+    .product-search-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .product-search-input {
+        width: 50%;
+        max-width: 500px;
+        padding: 12px;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .product-search-input:focus {
+        box-shadow: 0px 0px 10px rgba(0, 153, 255, 0.6);
+        border-color: #0099ff;
+        outline: none;
+    }
+    .product-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        background: linear-gradient(135deg, #ffffff, #f9f9f9);
+        text-align: center;
+        position: relative;
+    }
+    .product-card:hover {
+        transform: scale(1.05);
+        box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .product-image {
+        max-width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+    }
+    .product-card:hover .product-image {
+        transform: scale(1.08);
+    }
+    .product-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .product-price {
+        color: #28a745;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .product-stock {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    .product-btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-secondary {
+        background-color: #ccc;
+        color: #333;
+        cursor: not-allowed;
+    }
+    .back-btn {
+    display: inline-block;
+    background-color: #6c757d; /* Bootstrap secondary color */
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+    color: #fff;
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
+</style>
+
+<div class="container products-section">
+    <a href="javascript:history.back()" class="back-btn">← Back</a>
+
+    <h2 class="text-center mb-4">All Available Products</h2>
+
+    <div class="product-search-container">
+        <input type="text" id="productSearchInput" class="product-search-input" placeholder="Search for a product..." onkeyup="filterProducts()">
+    </div>
+
+    <div class="row" id="productList">
+        {% for product in products %}
+        <div class="col-md-4 mb-4 product-item">
+            <div class="product-card">
+                {% if product.Prod_image %}
+    <img src="{{ product.Prod_image.url }}" alt="{{ product.Prod_description }}" class="product-image">
+{% else %}
+    <img src="{% static 'images/default.jpg' %}" alt="No image available" class="product-image">
+{% endif %}
+
+                <h5 class="product-name">{{ product.Prod_description }}</h5>
+                <p class="product-price">₹{{ product.Prod_price }}</p>
+
+                {% if product.stock > 0 %}
+                <p class="product-stock text-info">Stock: {{ product.stock }}</p>
+                <button class="product-btn btn-primary" onclick="addToCart('{{ product.prod_id }}')">Add to Cart</button>
+                {% else %}
+                <p class="product-stock text-danger">Out of Stock</p>
+                <button class="product-btn btn-secondary" disabled>Out of Stock</button>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No products available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    function filterProducts() {
+        let input = document.getElementById('productSearchInput').value.toLowerCase();
+        let products = document.querySelectorAll('.product-item');
+
+        products.forEach(product => {
+            let productName = product.querySelector('.product-name').textContent.toLowerCase();
+            product.style.display = productName.includes(input) ? "flex" : "none";
+        });
+    }
+
+    function addToCart(productId) {
+        fetch(`/cart/add/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ product_id: productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/cart/';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "customize_admin/base.html" %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Dashboard</h1>
+    
+    <div class="stats-cards">
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-database"></i>
+            </div>
+            <div class="card-info">
+                <h3>Total Models</h3>
+                <p>{{ total_models }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <div class="card-info">
+                <h3>Applications</h3>
+                <p>{{ app_models|length }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="card-info">
+                <h3>Users</h3>
+                <p>{{ user_count|default:"0" }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="card-info">
+                <h3>Admin Users</h3>
+                <p>{{ admin_count|default:"1" }}</p>
+            </div>
+        </div>
+    </div>
+    {{ app_models|json_script:"app-models-data" }}
+    <div class="dashboard-grid">
+        <div class="dashboard-item models-chart">
+            <h2>Models Distribution</h2>
+            <canvas id="modelsChart"></canvas>
+        </div>
+        
+        <div class="dashboard-item recent-activities">
+            <h2>Recent Activities</h2>
+            <div class="activity-list">
+                {% if recent_activities %}
+    {% for activity in recent_activities %}
+        <div class="activity-item">
+            <div class="activity-icon">
+                <i class="fas fa-edit"></i>
+            </div>
+            <div class="activity-info">
+                <h4>{{ activity.model }}</h4>
+                <p>{{ activity.object|truncatechars:30 }}</p>
+                <small>{{ activity.app }}</small>
+            </div>
+            <div class="activity-action">
+                <a href="{% url 'customize_admin:model_edit' app_label=activity.app model_name=activity.model pk=activity.id %}" class="btn-small">View</a>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No recent activities</p>
+{% endif %}
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Create JSON data with Django's built-in json_script filter #}
+{{ app_models|json_script:"app-models-data" }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the data from the script tag
+        var appModelsData = JSON.parse(document.getElementById('app-models-data').textContent);
+        
+        // Extract labels and data from the JSON
+        var labels = Object.keys(appModelsData);
+        var data = Object.values(appModelsData);
+        
+        // Create the chart
+        var ctx = document.getElementById('modelsChart').getContext('2d');
+        var modelsChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Models per App',
+                    data: data,
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)',
+                        'rgba(199, 199, 199, 0.5)',
+                        'rgba(83, 102, 255, 0.5)',
+                        'rgba(40, 159, 64, 0.5)',
+                        'rgba(210, 199, 199, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(40, 159, 64, 1)',
+                        'rgba(210, 199, 199, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Models per Application'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'admin/base.html' %}
+<head>
+    <!-- Add your custom CSS here -->
+    <style>
+        table {
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 8px;
+        }
+
+        td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+{% block content %}
+<h2 class="text-center">Order Report</h2>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<!-- Add a table with Bootstrap responsive class -->
+<div class="container mt-4">
+    {% if data %}
+    <table class="table table-bordered table-striped table-responsive">
+        <thead class="thead-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Image</th>
+                <th>Quantity</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Approval Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.order_id|default:"-" }}</td>
+                <td>{{ row.product_id|default:"-" }}</td>
+                <td>{{ row.product_name|default:"-" }}</td>
+                <td>
+                    <img src="{{ row.Image_URL }}" alt="{{ row.product_name }}" class="img-fluid rounded" style="height: 50px; object-fit: contain;">
+                </td>
+                <td>{{ row.Quantity }}</td>
+                <td>{{ row.User }}</td>
+                <td>{{ row.Date }}</td>
+                <td>{{ row.Time }}</td>
+                <td>
+                    {% if row.Approval_Status == 'Approved' %}
+                        <span class="text-success">✅ Approved</span>
+                    {% else %}
+                        <span class="text-warning">⏳ Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center">No orders found for the selected criteria.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No data to display. Please select different criteria.</div>
+    {% endif %}
+</div>
+
+<div class="text-center mt-4">
+    <a href="{% url 'download_order_report' %}" class="btn btn-primary">Back to Report Selection</a>
+</div>
+{% endblock %}

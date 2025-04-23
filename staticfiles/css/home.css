@@ -1,0 +1,127 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f1f1;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #232f3e;
+    padding: 10px 20px;
+    color: white;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.search-bar {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-bar input {
+    width: 60%;
+    padding: 5px;
+}
+
+.search-bar button {
+    padding: 5px;
+    background-color: orange;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-items a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+
+
+/* Carousel Container */
+.carousel {
+    position: relative;
+    width: 100vw;
+    height: 40vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background-color: #000;
+}
+
+/* Images inside the carousel */
+.carousel-container {
+    display: flex;
+    width: 600vw;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+    width: 100vw;
+    height: 60vh;
+    object-fit: cover;
+}
+
+/* Left and Right Arrows */
+.left-arrow, .right-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.left-arrow:hover, .right-arrow:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.left-arrow {
+    left: 10px;
+}
+
+.right-arrow {
+    right: 10px;
+}
+
+/* Animation */
+@keyframes fade {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+}
+
+
+.banner {
+    text-align: center;
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
+    padding: 50px 20px;
+}
+
+.banner h2 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.icons {
+    margin-top: 10px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #232f3e;
+    color: white;
+    margin-top: 20px;
+}

@@ -1,0 +1,60 @@
+{% extends "customize_admin/base.html" %}
+{% load customize_admin_tags %} 
+{% block title %}{{ model_name }} List{% endblock %}
+
+{% block content %}
+<div class="model-detail-page">
+    <div class="page-header">
+        <div class="page-title">
+            <h1>{{ model_name }}</h1>
+            <p>Manage {{ model_name }} records</p>
+        </div>
+        <!-- <div class="page-actions">
+            <a href="{% url 'customize_admin:model_create' app_label=app_label model_name=model_name %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Add New
+            </a>
+        </div> -->
+    </div>
+    
+    <div class="model-table-container">
+        <table class="model-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    {% for field in fields %}
+                        {% if field != "id" %}
+                        <th>{{ field|title }}</th>
+                        {% endif %}
+                    {% endfor %}
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+<tr>
+    <td>{{ item.pk }}</td>
+    {% for field in fields %}
+        {% if field != "id" %}
+        <td>{{ item|getattr_safe:field|default:"-"|truncatechars:50 }}</td>
+        {% endif %}
+    {% endfor %}
+    <td class="actions">
+        <!-- {% if item.pk %}
+        <a href="{% url 'customize_admin:model_edit' app_label=app_label model_name=model_name pk=item.pk %}" class="btn-small btn-edit">
+            <i class="fas fa-edit"></i>
+        </a>
+        <a href="{% url 'customize_admin:model_delete' app_label=app_label model_name=model_name pk=item.pk %}" class="btn-small btn-delete">
+            <i class="fas fa-trash"></i>
+        </a>
+        {% else %}
+        <span class="text-muted">Invalid Item</span>
+        {% endif %} -->
+    </td>
+</tr>
+{% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

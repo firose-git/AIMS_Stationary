@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .product-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        background: #fff;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .product-body {
+        padding: 15px;
+        text-align: center;
+    }
+
+    .product-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .product-price {
+        font-size: 1rem;
+        color: #27ae60;
+        font-weight: 600;
+    }
+
+    .out-of-stock {
+        color: #d9534f;
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background: linear-gradient(135deg, #ff6f00, #ff9800);
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+    .btn-custom:hover {
+        background: linear-gradient(135deg, #e65100, #ff6f00);
+    }
+</style>
+<div class="container mt-4">
+    <a href="javascript:history.back()" class="btn btn-secondary mb-3">← Back</a>
+    <h2 class="text-center mb-4">{{ subcategory.SubCat_description }} - Products</h2>
+
+    {% if products %}
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="product-card">
+                <img src="{{ product.Prod_image.url }}" class="product-image" alt="{{ product.Prod_description }}">
+                <div class="product-body">
+                    <h5 class="product-title">{{ product.Prod_description }}</h5>
+                    <p class="product-price">₹{{ product.Prod_price }}</p>
+
+                    <!-- Stock Availability -->
+                    {% if product.stock > 0 %}
+                    <p class="text-success">In Stock: {{ product.stock }}</p>
+                    <button class="btn btn-success add-to-cart"
+                        data-product-id="{{ product.prod_id }}">Add to Cart</button>
+                    {% else %}
+                    <p class="out-of-stock">Out of Stock</p>
+                    <button class="btn btn-secondary" disabled>Out of Stock</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No products available in this subcategory.</p>
+    {% endif %}
+</div>
+
+<!-- {% block scripts %}
+<script>
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("✅ JavaScript Loaded Successfully");
+
+        let isAuthenticated = "{{ request.user.is_authenticated|lower }}" === "true";
+
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+            button.addEventListener("click", function () {
+                let productId = this.getAttribute("data-product-id");
+
+                if (!productId) {
+                    alert("Error: Product ID is missing.");
+                    return;
+                }
+
+                // If the user is NOT logged in, show alert and redirect to login
+                if (!isAuthenticated) {
+                    alert("⚠ You need to log in to add items to your cart.");
+                    window.location.href = "{% url 'login' %}";
+                    return;
+                }
+
+                // Proceed to add to cart if user is logged in
+                fetch("/cart/add/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRFToken()
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(`Error: ${data.error}`);
+                    } else {
+                        alert(data.message);
+                        window.location.href = data.cart_url;
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+
+        function getCSRFToken() {
+            let cookieValue = null;
+            let cookies = document.cookie.split(";");
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith("csrftoken=")) {
+                    cookieValue = decodeURIComponent(cookie.split("=")[1]);
+                    break;
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+{% endblock %} -->
+
+
+
+{% endblock %}

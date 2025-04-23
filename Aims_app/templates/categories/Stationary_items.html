@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background: #f7f7f7;
+    }
+
+    .category-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .category-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+    }
+
+    .category-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        transition: all 0.3s ease-in-out;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .category-title-small {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .btn-view-products {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg, #ff6f00, #ff9800);
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+        border: none;
+        text-decoration: none;
+    }
+
+    .btn-view-products:hover {
+        background: linear-gradient(135deg, #e65100, #ff6f00);
+        transform: scale(1.05);
+    }
+
+    .missing-id {
+        color: red;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .btn.btn-secondary.mb-3 {
+    display: inline-block;
+    margin-left: 0;
+    text-align: left;
+}
+
+</style>
+
+<div class="container mt-4 category-container">
+    <div style="text-align: left;">
+        <a href="javascript:history.back()" class="btn btn-secondary mb-3">← Back</a>
+    </div>
+    
+    <h2 class="category-title">Stationery Categories</h2>
+
+    <div class="row">
+        {% for subcategory in subcategories %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="category-card text-center">
+                <h5 class="category-title-small">{{ subcategory.SubCat_description }}</h5>
+
+                {% if subcategory.SubCat_id %}
+                <a href="{% url 'subcategory_products' subcategory.SubCat_id %}" class="btn btn-view-products">
+                    View Products
+                </a>
+                {% else %}
+                <p class="missing-id">
+                    ❌ Subcategory ID is missing for {{ subcategory.SubCat_description }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

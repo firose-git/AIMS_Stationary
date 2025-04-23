@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .product-search-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .product-search-input {
+        width: 50%;
+        max-width: 500px;
+        padding: 12px;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .product-search-input:focus {
+        box-shadow: 0px 0px 10px rgba(0, 153, 255, 0.6);
+        border-color: #0099ff;
+        outline: none;
+    }
+</style>
+
+<h2 class="text-center">Search Results for "{{ query }}"</h2>
+
+<div class="product-search-container">
+    <input type="text" id="productSearchInput" class="product-search-input" placeholder="Search within results..." onkeyup="filterProducts()">
+</div>
+
+<div class="row" id="productList">
+    {% if results %}
+    {% for product in results %}
+    <div class="col-md-4 mb-4 product-item">
+        <div class="product-card">
+            {% if product.Prod_image %}
+            <img src="{{ product.Prod_image.url }}" alt="{{ product.Prod_description }}" class="product-image">
+            {% else %}
+            <img src="/static/images/default-product.jpg" alt="No Image" class="product-image">
+            {% endif %}
+
+            <h5 class="product-name">{{ product.Prod_description }}</h5>
+            <p class="product-price">₹{{ product.Prod_price }}</p>
+
+            {% if Products.Stock_master > 0 %}
+            <p class="product-stock text-info">Stock: {{ product.Stock_master }}</p>
+            <button class="product-btn btn-primary" onclick="addToCart('{{ product.prod_id }}')">Add to Cart</button>
+            {% else %}
+            <p class="product-stock text-danger">Out of Stock</p>
+            <button class="product-btn btn-secondary" disabled>Out of Stock</button>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No products found.</p>
+    {% endif %}
+</div>
+
+<script>
+    function filterProducts() {
+        let input = document.getElementById('productSearchInput').value.toLowerCase();
+        let products = document.querySelectorAll('.product-item');
+
+        products.forEach(product => {
+            let productName = product.querySelector('.product-name').textContent.toLowerCase();
+            product.style.display = productName.includes(input) ? "flex" : "none";
+        });
+    }
+
+    function addToCart(productId) {
+        fetch('/add-to-cart/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ product_id: productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Product added to cart successfully!');
+            } else {
+                alert('Failed to add product to cart.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

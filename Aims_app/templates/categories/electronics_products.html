@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="javascript:history.back()" class="btn btn-secondary mb-3">← Back</a>
+    <h2 class="text-center mb-4">Products in {{ subcategory.SubCat_description }}</h2>
+
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="product-card">
+                        <img src="{{ product.Prod_image.url }}" class="product-image" alt="{{ product.Prod_description }}">
+                        <div class="product-body">
+                            <h5 class="product-title">{{ product.Prod_description }}</h5>
+                            <p class="product-price">₹{{ product.Prod_price }}</p>
+
+                            {% if product.stock > 0 %}
+                                <p class="text-success">In Stock: {{ product.stock }}</p>
+                                <button onclick="addToCart('{{ item.id }}')" class="btn btn-success">Add to Cart</button>
+
+                            {% else %}
+                                <p class="out-of-stock">Out of Stock</p>
+                                <button class="btn btn-secondary" disabled>Out of Stock</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-muted">No products available in this category.</p>
+    {% endif %}
+</div>
+{% endblock %}

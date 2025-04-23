@@ -1,0 +1,236 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<style>
+    .report-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+    }
+    
+    .report-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #2c3e50;
+        position: relative;
+    }
+    
+    .report-header h2 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 2.2rem;
+    }
+    
+    .report-header::after {
+        content: "";
+        display: block;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, #3498db, #2ecc71);
+        margin: 1rem auto;
+        border-radius: 2px;
+    }
+    
+    .report-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #34495e;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        outline: none;
+    }
+    
+    .form-control:hover {
+        border-color: #bdc3c7;
+    }
+    
+    /* Improved select dropdown styling */
+    .select-wrapper {
+        position: relative;
+    }
+    
+    .select-wrapper::after {
+        content: "▼";
+        font-size: 0.7rem;
+        color: #2c3e50;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+    
+    select.form-control {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        background-color: white;
+        color: #2c3e50;
+        font-weight: 500;
+        padding-right: 2.5rem;
+        border: 2px solid #3498db;  /* Increased border color visibility */
+        height: 3.5rem;  /* Ensures the dropdown is tall enough */
+        line-height: 2.0;  /* Controls text alignment inside the dropdown */
+        padding-left: 1rem;  /* Ensures content is not too tight */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    select.form-control:focus {
+        border-color: #2ecc71;  /* Highlight border color when focused */
+        box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+    }
+    
+    select.form-control option {
+        color: #2c3e50;
+        background-color: white;
+        padding: 10px;
+        font-weight: normal;
+    }
+    
+    select.form-control option:checked {
+        background-color: #3498db;  /* Highlight the selected option */
+        color: white;
+    }
+    
+    .button-group {
+        grid-column: span 2;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    
+    .btn-view {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+    }
+    
+    .btn-view:hover {
+        background: linear-gradient(135deg, #2980b9, #2c3e50);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+    }
+    
+    .btn-download {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+    }
+    
+    .btn-download:hover {
+        background: linear-gradient(135deg, #27ae60, #16a085);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .report-form {
+            grid-template-columns: 1fr;
+        }
+        
+        .button-group {
+            grid-column: 1;
+            flex-direction: column;
+        }
+    }
+    
+    /* Cool animation for form appearance */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .report-container {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+</style>
+
+<div class="report-container">
+    <div class="report-header">
+        <h2>Order Report</h2>
+        <p>Generate detailed reports for your orders</p>
+    </div>
+    
+    <form method="post" class="report-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" id="start_date" name="start_date" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="end_date">End Date</label>
+            <input type="date" id="end_date" name="end_date" class="form-control" required>
+        </div>
+        
+        <div class="form-group" style="grid-column: span 2;">
+            <label for="user_id">Select User (Optional)</label>
+            <div class="select-wrapper">
+                <select id="user_id" name="user_id" class="form-control">
+                    <option value="">All Users</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button type="submit" name="view_report" value="true" class="btn btn-view" formtarget="_blank">
+                View Report
+            </button>
+            <button type="submit" class="btn btn-download">Download Report</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

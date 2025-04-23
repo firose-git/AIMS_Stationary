@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+/* Container Styling */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Dropdown Styling */
+.dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Category Card Styling */
+.category-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Category Title */
+.category-title-small {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* View Products Button */
+.btn-view-products {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s ease;
+}
+
+.btn-view-products:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+</style>
+
+<div class="container mt-4">
+    <a href="javascript:history.back()" class="btn btn-secondary mb-3">← Back</a>
+    <h2 class="text-center mb-4">Electronics Categories</h2>
+
+    <!-- <div class="text-center mb-4">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="electronicsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Electronics Category
+            </button>
+            <div class="dropdown-menu" aria-labelledby="electronicsDropdown">
+                {% for subcategory in subcategories %}
+                    <a class="dropdown-item" href="{% url 'electronics_products' subcategory.slug %}">
+                        {{ subcategory.SubCat_description }}
+                    </a>
+                {% empty %}
+                    <p class="dropdown-item text-muted">No categories available</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div> -->
+
+    <div class="row">
+        {% for subcategory in subcategories %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="category-card text-center">
+                <h5 class="category-title-small">{{ subcategory.SubCat_description }}</h5>
+
+                <a href="{% url 'subcategory_products' subcategory.SubCat_id %}" class="btn btn-view-products">
+                    View Products
+                </a>
+                
+                
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,476 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+.custom-header {
+    background: linear-gradient(135deg, #ff7f50, #6610f2); /* Gradient background */
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    
+}
+
+.custom-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+}
+
+.custom-header .logo img {
+    max-width: 200px;
+    max-height: 150px;
+}
+
+.custom-header .search-cart {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.custom-header .search-container {
+    display: flex;
+    align-items: center;
+}
+
+.custom-header .search-container input {
+    padding: 8px 12px;
+    border-radius: 30px 0 0 30px;
+    border: 2px solid #007bff;
+    width: 200px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.custom-header .search-container input:focus {
+    border-color: #6610f2;
+    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
+}
+
+.custom-header .search-btn {
+    padding: 8px 15px;
+    background: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 0 30px 30px 0;
+    transition: background 0.3s ease;
+}
+
+.custom-header .search-btn:hover {
+    background: #6610f2;
+}
+
+.custom-header .cart-btn {
+    background: #ff7f50;
+    padding: 10px 15px;
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.custom-header .cart-btn:hover {
+    background: #e65100;
+    transform: scale(1.05);
+}
+
+/* Mobile responsive design */
+@media (max-width: 768px) {
+    .custom-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .custom-header h1 {
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+
+    .custom-header .search-container input {
+        width: 150px;
+    }
+
+    .custom-header .cart-btn {
+        margin-top: 10px;
+    }
+}
+
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(45deg, #343a40, #2d2d2d); /* Gradient background */
+    padding: 12px 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Strong shadow */
+    position:static;
+}
+
+.navbar .navbar-brand {
+    font-size: 1.4rem;
+    color: #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar .navbar-brand:hover {
+    color: #ff7f50; /* Coral color */
+    transform: scale(1.1); /* Scale-up effect */
+}
+
+/* Main navbar items styling */
+.navbar-nav {
+    display: flex;
+    justify-content: space-between; /* Spread out items */
+    width: 100%;
+}
+
+.navbar .nav-item {
+    flex: 1; /* Each item takes equal width */
+    margin: 0 10px; /* Add spacing between items */
+    text-align: center; /* Center-align text */
+}
+
+.navbar .nav-link {
+    font-size: 1.1rem;
+    color: #ffffff;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.navbar .nav-link i {
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #343a40;
+    background-color: #ff7f50;
+}
+
+.navbar .nav-link:hover i {
+    transform: translateX(5px); /* Smooth icon animation */
+}
+
+/* Dropdown */
+.navbar .nav-item.dropdown .dropdown-menu {
+    background-color: #343a40;
+    border-radius: 8px;
+}
+
+.navbar .dropdown-item {
+    color: #ffffff;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .dropdown-item:hover {
+    background-color: #ff7f50;
+    color: #343a40;
+}
+
+/* Navbar Toggler Icon */
+.navbar-toggler-icon {
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 6px;
+}
+
+/* Active Link */
+.navbar .nav-link.active {
+    color: #ff7f50;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column; /* Stack items vertically */
+        text-align: center;
+    }
+
+    .navbar .nav-item {
+        margin: 12px 0; /* More space for stacked items */
+    }
+
+    .navbar .navbar-brand {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .navbar .navbar-toggler-icon {
+        background-color: #ff7f50; /* Toggler icon in coral */
+    }
+}
+
+
+/* Footer */
+footer {
+    background: #222;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+    box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+}
+footer a {
+    color: #ffc107;
+    transition: 0.3s;
+    text-decoration: none;
+}
+footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(45deg, #007bff, #6610f2);
+    border: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: 0.3s;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.btn-primary:hover {
+    background: #ffc107;
+    color: black;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .navbar-nav {
+        text-align: center;
+    }
+}
+
+/* Social Icons Styling */
+.social-icons a {
+    color: white;
+    margin: 0 10px;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+.social-icons a:hover {
+    color: #007bff;
+}
+
+
+
+/* 🎡 Carousel Styles */
+#myCarousel {
+    width: 100%;
+    margin: auto;
+}
+
+.carousel-inner img {
+    width: 100% !important;
+    height: 350px !important;
+    object-fit: cover;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item.active img {
+    animation: zoomIn 5s linear infinite alternate;
+}
+
+/* 🚀 Zoom Effect */
+@keyframes zoomIn {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+/* 🌟 Carousel Navigation Buttons */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.carousel-indicators button {
+    background-color: gray;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.carousel-indicators .active {
+    background-color: #ff9800;
+}
+
+/* 🛍 Product Card Styles */
+.card {
+    width: 18rem;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* 📦 Product Images */
+.card img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover img {
+    transform: scale(1.05);
+}
+
+/* 🎨 Card Title */
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 📌 Product Container */
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* 📱 Mobile Adjustments */
+@media (max-width: 576px) {
+    .card {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn-primary {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+
+    .navbar-nav {
+        text-align: center;
+    }
+}
+
+
+/* CSS for Live Search */
+.search-container {
+    position: relative;
+    width: 300px;
+}
+
+#searchResults {
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    display: none;
+}
+
+.search-item {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.search-item:hover {
+    background-color: #f0f0f0;
+}
+
+.not-found {
+    color: red;
+}
+
+/* Clear Search Button */
+#clearSearch {
+    display: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* Go to Top Button */
+#goToTop {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#goToTop:hover {
+    background-color: #0056b3;
+}
+
+#scrollTopBtn {
+    display: none; /* Hidden by default */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s;
+}
+
+#scrollTopBtn:hover {
+    background-color: #0056b3;
+}

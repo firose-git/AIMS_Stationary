@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% block title %}Shopping Cart{% endblock %}
+{% block content %}
+<div class="container cart-container">
+    <h2 class="text-center mb-4">Shopping Cart</h2>
+
+    {% if not user.is_authenticated %}
+    <script>window.location.href = "/login/";</script>
+    {% endif %}
+
+    <style>
+        .cart-container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            background: #f4f4f4;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cart-table th,
+        .cart-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .cart-image {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .quantity-btn,
+        .remove-btn,
+        .confirm-btn {
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .quantity-btn {
+            background: #f0ad4e;
+            color: black;
+            border: none;
+        }
+
+        .quantity-btn:hover {
+            background: #eea236;
+        }
+
+        .remove-btn {
+            background: crimson;
+            color: white;
+        }
+
+        .remove-btn:hover {
+            background: darkred;
+        }
+
+        .confirm-btn {
+            background: green;
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            background: darkgreen;
+        }
+
+        .quantity-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-display {
+            margin: 0 10px;
+            font-size: 16px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            /* Center horizontally */
+            align-items: start;
+            /* Align items to the top */
+            height: 100vh;
+            /* Full viewport height */
+            position: relative;
+        }
+
+        .continue-shopping-btn {
+            background-color: #f0ad4e;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 80px;
+            /* Push the button down */
+        }
+
+
+        .continue-shopping-btn:hover {
+            background-color: #eea236;
+        }
+
+        .confirm-btn {
+            background: #28a745;
+            /* Bootstrap success green */
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+        }
+
+        .confirm-btn:hover {
+            background: #218838;
+            /* Darker green on hover */
+            transform: scale(1.05);
+        }
+
+        .confirm-btn:active {
+            background: #1e7e34;
+            /* Even darker green when clicked */
+            transform: scale(0.98);
+        }
+    </style>
+    {% csrf_token %}
+    {% if cart_items %}
+    <a href="javascript:history.back()" class="btn btn-secondary mb-3">← Back</a>
+    <table class="cart-table">
+
+        <thead>
+            <tr>
+                <th>Remove</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Image</th>
+                <th>Product Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr id="cart-item-{{ item.Cart_id }}">
+                <td>
+                    <button class="remove-btn" onclick="removeFromCart('{{ item.Cart_id }}')">X</button>
+                </td>
+                <td>₹<span class="price-display" id="price-{{ item.Cart_id }}">
+                        {{ item.prod_id.Prod_price|default:"0.00" }}
+                    </span></td>
+
+
+                <td>
+                    <div class="quantity-input-container">
+                        <button class="quantity-btn"
+                            onclick="updateQuantity('{{ item.Cart_id }}', 'decrease')">-</button>
+                        <span class="quantity-display">{{ item.quantity }}</span>
+                        <button class="quantity-btn"
+                            onclick="updateQuantity('{{ item.Cart_id }}', 'increase')">+</button>
+                    </div>
+                </td>
+
+                <td>
+                    <img src="{{ item.prod_id.Prod_image.url }}" class="cart-image"
+                        alt="{{ item.prod_id.Prod_description }}">
+                </td>
+                <td>{{ item.prod_id.Prod_description }}</td>
+            </tr>
+            {% endfor %}
+
+
+
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-center">Your cart is empty.</p>
+    {% endif %}
+</div>
+
+<!-- Confirmation and Continue Shopping Buttons -->
+<div class="button-container">
+    <button onclick="continueShopping()" class="continue-shopping-btn">Continue Shopping</button>
+    <button onclick="confirmPurchase()" class="confirm-btn">Confirm</button>
+</div>
+{% block scripts %}
+<script>
+    function addToCart(productId) {
+        fetch(`/cart/add/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ product_id: productId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.cart_url) {
+                    window.location.href = data.cart_url; // Redirect to the cart page.
+                } else {
+                    alert(data.error || 'Error adding product to cart.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function updateQuantity(cartId, action) {
+        if (!cartId) {
+            console.error("Cart ID is missing!");
+            return;
+        }
+
+        fetch(`/cart/update/${cartId}/${action}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    let quantitySpan = document.querySelector(`#cart-item-${cartId} .quantity-display`);
+                    let priceSpan = document.querySelector(`#cart-item-${cartId} .price-display`);
+
+                    if (quantitySpan) {
+                        quantitySpan.textContent = data.quantity; // Update quantity
+                    }
+
+                    if (priceSpan) {
+                        priceSpan.textContent = `${data.total_price.toFixed(2)}`; // Update price
+                    }
+                } else {
+                    alert(data.message || 'Error updating quantity.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+
+    // Function to remove from cart dynamically
+    function removeFromCart(cartId) {
+        if (!cartId) {
+            console.error('Error: cartId is undefined or empty');
+            return;
+        }
+
+        fetch(`/cart/remove/${cartId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`cart-item-${cartId}`).remove();  // Remove row dynamically
+                } else {
+                    console.error('Error removing item:', data);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    // JavaScript function for confirm button in cart page
+function confirmPurchase() {
+    console.log("Confirm button clicked");
+    
+    // Get CSRF token
+    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (!csrfInput) {
+        console.error("CSRF token not found");
+        alert("Error: CSRF token not found. Please refresh the page.");
+        return;
+    }
+    
+    const csrftoken = csrfInput.value;
+    console.log("CSRF token found");
+    
+    // Show loading indicator or disable button
+    const confirmBtn = document.querySelector('.confirm-btn');
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "Processing...";
+    }
+    
+    // Send POST request to confirm order
+    fetch('/confirm-order/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            confirm: true
+        })
+    })
+    .then(response => {
+        console.log("Response status:", response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log("Response data:", data);
+        
+        if (data.success) {
+            // Show success message
+            alert(data.message || "Your purchase has been confirmed! Thank you for shopping with us.");
+            
+            // Redirect to checkout page
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            }
+        } else {
+            // Show error message
+            alert(data.message || "There was a problem with your order. Please try again.");
+            
+            // Re-enable button
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = "Confirm";
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while processing your order. Please try again.");
+        
+        // Re-enable button
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = "Confirm";
+        }
+    });
+}
+
+
+// Fun
+
+    function continueShopping() {
+        window.location.href = `{% url 'stationary' %}`;
+    }
+
+    // Function to retrieve CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+</script>
+
+{% endblock %}
+{% endblock %}

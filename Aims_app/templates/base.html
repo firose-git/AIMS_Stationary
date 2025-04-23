@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}AcadStationary {% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="{% static 'images/logo.png' %}" rel="icon" type="image/x-icon">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="custom-header">
+        <div class="logo-wrapper">
+            <img src="{% static 'images/4c.png' %}" alt="Logo" width="200px" height="70px">
+        </div>
+
+        <h1 class="text-center">AcadStationery Portal</h1>
+        <div class="search-cart d-flex align-items-center gap-2">
+            {% if user.is_authenticated %}
+            <a href="{% url 'message' %}" class="btn btn-info position-relative">
+                <i class="bi bi-bell"></i> Notifications
+                <!-- Optional red dot badge -->
+                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                    <span class="visually-hidden">New alerts</span>
+                </span>
+            </a>
+            {% endif %}
+            
+            <a href="{% url 'view_cart' %}" class="btn btn-primary cart-btn" id="cart-btn">
+                🛒 Cart
+            </a>
+        </div>
+    </header>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about' %}active{% endif %}" href="{% url 'about' %}">
+                            <i class="fas fa-info-circle"></i> About
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-th-large"></i> Categories
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'stationary' %}">All Products</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Stationary_product' %}">Stationary</a></li>
+                            <li><a class="dropdown-item" href="{% url 'electronics_categories' %}">Electronics</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/contact' %}active{% endif %}"
+                            href="{% url 'contact' %}">
+                            <i class="fas fa-phone-alt"></i> Contact
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> My Account
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'view_cart' %}">Cart</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            {% if user.is_authenticated and user.is_superuser %}
+                            <li><a class="dropdown-item" href="{% url 'customize_admin:dashboard' %}" class="admin-link">Admin Panel</a></li>
+                            {% endif %}
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                            <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button id="scrollTopBtn" title="Go to top">
+            <a href="#"><i class="fas fa-arrow-up"></i></a>
+        </button>
+    </nav>
+
+
+
+
+
+
+    <!-- BODY CONTENT -->
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white pt-5 pb-4">
+        <div class="container text-center text-md-start">
+            <div class="row">
+
+                <!-- Quick Links -->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <h5 class="fw-bold">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Home</a></li>
+                        <li><a href="{% url 'about' %}" class="text-white">About Us</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-white">Contact</a></li>
+                        <li><a href="#" class="text-white">Courses</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
+                    <h5 class="fw-bold">Contact Us</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> 1st Cross, Peenya, Bengaluru 560058, India</p>
+                    <p><i class="fas fa-phone"></i>
+                        +91-815-000-1994</p>
+                    <p><i class="fas fa-envelope"></i> admission@theaims.ac.in</p>
+                </div>
+
+                <!-- Newsletter Subscription -->
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
+                    <h5 class="fw-bold">Stay Updated</h5>
+                    <p>Subscribe to our newsletter for the latest updates.</p>
+                    <form class="d-flex">
+                        <input type="email" class="form-control me-2" placeholder="Your Email" required>
+                        <button class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Social Media Links -->
+            <div class="text-center mt-4">
+                <h6>Connect with us</h6>
+                <a href="https://www.facebook.com/AIMS1994" class="me-3 text-reset"><i
+                        class="fab fa-facebook fa-lg"></i></a>
+                <a href="https://x.com/AIMSinstitutes" class="me-3 text-reset"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="https://www.instagram.com/aimsinstitutes1994/" class="me-3 text-reset"><i
+                        class="fab fa-instagram fa-lg"></i></a>
+                <a href="https://www.linkedin.com/school/aims---acharya-institute-of-management-&-sciences/posts/?feedView=all"
+                    class="me-3 text-reset"><i class="fab fa-linkedin fa-lg"></i></a>
+                <a href="https://www.youtube.com/@aimsinstitutes7015" class="me-3 text-reset"><i
+                        class="fab fa-youtube fa-lg"></i></a>
+            </div>
+
+
+            <!-- Copyright -->
+            <div class="text-center mt-3">
+                <hr class="mb-2" style="border-top: 1px solid #ffffff;">
+                <p>© 2025 AIMS Institutes | All Rights Reserved</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let scrollTopBtn = document.getElementById("scrollTopBtn");
+            let cartButton = document.getElementById("cart-btn");
+            let searchInput = document.getElementById("searchInput");
+            let searchButton = document.querySelector(".search-btn");
+
+            // Scroll-to-top functionality
+            window.onscroll = function () {
+                scrollTopBtn.style.display = (document.documentElement.scrollTop > 100) ? "block" : "none";
+            };
+
+            scrollTopBtn.onclick = function () {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            };
+
+            // Blinking Cart Button
+            function blinkCartButton(timesPerSecond) {
+                let blinkInterval = 1000 / (timesPerSecond * 2);
+                let blinkCount = 0, maxBlinks = 10;
+
+                let interval = setInterval(() => {
+                    cartButton.style.visibility = (cartButton.style.visibility === "hidden") ? "visible" : "hidden";
+                    if (++blinkCount >= maxBlinks) {
+                        clearInterval(interval);
+                        cartButton.style.visibility = "visible";
+                    }
+                }, blinkInterval);
+            }
+
+            // Search functionality
+            searchButton.addEventListener("click", function () {
+                let query = searchInput.value.trim();
+                if (query !== "") {
+                    window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+                }
+            });
+
+            searchInput.addEventListener("keypress", function (event) {
+                if (event.key === "Enter") {
+                    searchButton.click();
+                }
+            });
+
+            // Add to cart function
+            function addToCart(productId) {
+                if (!productId) {
+                    console.error("Error: Product ID is missing!");
+                    return;
+                }
+
+                fetch(`/cart/add/${productId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        blinkCartButton(2); // Blink cart button when item is added
+                    })
+                    .catch(error => console.error("Error adding to cart:", error));
+            }
+
+            // CSRF Token retrieval
+            function getCSRFToken() {
+                let csrfToken = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+                return csrfToken ? csrfToken.split('=')[1] : '';
+            }
+
+            window.addToCart = addToCart; // Make function globally accessible
+        });
+
+
+    </script>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load math_filters %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>📩 Order Messages</h2>
+
+    {% if order_data %}
+        {% for order_item in order_data %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>Order ID:</strong> {{ order_item.order.Order_id }} |
+                    <strong>Status:</strong>
+                    {% if order_item.order.Status == 'Approved' %}
+                        <span class="text-success">✅ Approved - Your products are ready</span>
+                    {% else %}
+                        <span class="text-warning">⏳ Pending - Waiting for approval</span>
+                    {% endif %}
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for detail in order_item.details %}
+                        <li class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-3 text-center">
+                                    <img src="{{ detail.Prod_id.Prod_image.url }}" alt="{{ detail.Prod_id.Prod_description }}"
+                                         class="img-fluid rounded" style="height: 130px; object-fit: contain;">
+                                </div>
+                                <div class="col-md-9">
+                                    <h5>{{ detail.Prod_id.Prod_description }}</h5>
+                                    <p class="mb-1">Quantity: {{ detail.quantity }}</p>
+                                    <p class="mb-1">Unit Price: ₹{{ detail.Prod_id.Prod_price }}</p>
+                                    <p class="mb-0"><strong>Total Price: ₹{{ detail.quantity|multiply:detail.Prod_id.Prod_price }}</strong></p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">You don't have any orders yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

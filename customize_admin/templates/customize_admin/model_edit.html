@@ -1,0 +1,63 @@
+{% extends "customize_admin/base.html" %}
+
+{% block title %}Edit {{ model_name }}{% endblock %}
+{% load customize_admin_tags %} 
+{% block content %}
+<div class="model-form-page">
+    <div class="page-header">
+        <div class="page-title">
+            <h1>Edit {{ model_name }}</h1>
+            <p>ID: {{ item.id }}</p>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'customize_admin:model_detail' app_label=app_label model_name=model_name %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+    
+    <div class="model-form-container">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in fields %}
+    <div class="form-group">
+        <label for="{{ field.name }}">{{ field.name|title }}</label>
+        
+        {% if field.get_internal_type == 'TextField' %}
+        <textarea id="{{ field.name }}" name="{{ field.name }}" rows="4">{{ item|getattr_safe:field.name }}</textarea>
+        {% elif field.get_internal_type == 'BooleanField' %}
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="{{ field.name }}" name="{{ field.name }}" {% if item|getattr_safe:field.name %}checked{% endif %}>
+            <label for="{{ field.name }}" class="checkbox-label"></label>
+        </div>
+        {% elif field.get_internal_type == 'DateField' or field.get_internal_type == 'DateTimeField' %}
+        <input type="datetime-local" id="{{ field.name }}" name="{{ field.name }}" value="{{ item|getattr_safe:field.name|date:'Y-m-d\TH:i' }}">
+        {% elif field.get_internal_type == 'ForeignKey' %}
+        <select id="{{ field.name }}" name="{{ field.name }}">
+            <option value="">---------</option>
+            {% for related_obj in field.related_model.objects.all %}
+            <option value="{{ related_obj.id }}" {% if item|getattr_safe:field.name == related_obj %}
+            selected{% endif %}>
+                {{ related_obj }}
+            </option>
+            {% endfor %}
+        </select>
+        
+
+
+        {% else %}
+        <input type="text" id="{{ field.name }}" name="{{ field.name }}" value="{{ item|getattr_safe:field.name }}">
+        {% endif %}
+    </div>
+{% endfor %}
+
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'customize_admin:model_detail' app_label=app_label model_name=model_name %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

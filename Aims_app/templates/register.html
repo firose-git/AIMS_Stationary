@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Register
+{% endblock title %}
+
+{% block content %}
+<!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+/* Inherit from login styles exactly */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#register-page {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    background: linear-gradient(to right, #f94b90 0%, #7b2ff7 100%);
+}
+
+.content-container {
+    display: flex;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    padding: 50px 0;
+}
+
+.left-content {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 0 5%;
+}
+
+.left-content h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.left-content p {
+    font-size: 18px;
+    max-width: 90%;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.rocket-container {
+    margin-top: 20px;
+}
+
+.rocket-img {
+    width: 200px;
+    height: auto;
+}
+
+.right-content {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5%;
+}
+
+.register-form-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.register-form-container h2 {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #5e2e91;
+    font-size: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 18px 15px 18px 50px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.register-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background-color: #d91a73;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+.register-btn:hover {
+    background-color: #c0156a;
+}
+
+.login-link {
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.login-link a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .content-container {
+        flex-direction: column;
+    }
+    
+    .left-content, .right-content {
+        width: 100%;
+        padding: 50px 20px;
+    }
+    
+    .left-content {
+        padding-bottom: 0;
+    }
+    
+    .right-content {
+        padding-top: 0;
+    }
+}
+</style>
+
+<div id="register-page">
+    <div class="content-container">
+        <!-- Left side -->
+        <div class="left-content">
+            <h1>Join AcadStationary</h1>
+            <p>Create your account to access department orders, manage inventory, and simplify your stationary processes.</p>
+            <div class="rocket-container">
+                <img src="{% static 'images/rocket1.png' %}" alt="Rocket" class="rocket-img">
+            </div>
+        </div>
+
+        <!-- Right side -->
+        <div class="right-content">
+            <div class="register-form-container">
+                <h2>USER REGISTER</h2>
+                {% if messages %}
+                <div class="alert alert-danger">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <form method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <i class="bi bi-person-fill"></i>
+                        <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="bi bi-envelope-fill"></i>
+                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="bi bi-lock-fill"></i>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="register-btn">Register</button>
+                    <div class="login-link">
+                        <a href="{% url 'login' %}">Already have an account? Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

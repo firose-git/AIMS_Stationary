@@ -1,0 +1,14 @@
+.card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+.card-body {
+    background-color: #f8f9fa;
+}
+h2 {
+    color: #343a40;
+}
