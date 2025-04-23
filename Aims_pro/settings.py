@@ -125,18 +125,26 @@ WSGI_APPLICATION = 'Aims_pro.wsgi.application'
 #     }
 # }
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'AIMS_Project',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'mongodb+srv://mohamedfirose59:Mohammedfirose59@cluster0.rpreb5u.mongodb.net/AIMS_Project?retryWrites=true&w=majority&appName=StationaryPro',
-            
+            'host': 'mongodb+srv://mohamedfirose59:Mohammedfirose59@cluster0.rpreb5u.mongodb.net/?retryWrites=true&w=majority&appName=StationaryPro',
+            'username': 'mohamedfirose59',
+            'password': 'Mohammedfirose59',
+            'authSource': 'admin',
+            'authMechanism': 'SCRAM-SHA-1',
+            'tls': True,
+            'tlsAllowInvalidCertificates': True,
+            'serverSelectionTimeoutMS': 10000,
+            'connectTimeoutMS': 10000,
+            'socketTimeoutMS': 10000
         }
     }
 }
+
 
 #pass:Aims@123
 #user:Aims
