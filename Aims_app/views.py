@@ -533,10 +533,13 @@ def download_order_report(request):
 
     # Render the report download form with the list of users for the dropdown
     return render(request, 'admin/download_report.html', {'users': users})
+
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from Aims_app.models import Order_Details, User, Order_Table, Products
 from datetime import datetime as dt
+
 @staff_member_required
 def view_report(request):
     # Initialize users for the dropdown
@@ -559,14 +562,14 @@ def view_report(request):
                     'users': users
                 })
 
-            # Build the query
-            orders = Order_Details.objects.select_related('Order_id', 'Prod_id', 'User_id').all()
+            # Build the query with all needed relationships
+            orders = list(Order_Details.objects.select_related('Order_id', 'Prod_id', 'User_id').all())
             
             # Filter by user if specified
             if user_id:
                 try:
                     user = User.objects.get(id=user_id)
-                    orders = orders.filter(User_id=user)
+                    orders = [order for order in orders if order.User_id == user]
                 except User.DoesNotExist:
                     return render(request, 'admin/view_report.html', {
                         'error': "Selected user does not exist.",
@@ -574,38 +577,23 @@ def view_report(request):
                     })
 
             # Filter by date range
-            filtered_orders = []
-            for order in orders:
-                if start.date() <= order.Created_date.date() <= end.date():
-                    filtered_orders.append(order)
+            filtered_orders = [order for order in orders if start.date() <= order.Created_date.date() <= end.date()]
 
-            # Prepare data for display
+            # Prepare data for display - USING THE EXACT KEYS EXPECTED IN TEMPLATE
             data = []
             for order in filtered_orders:
-                # Ensure we have all required relations and print debug info
-                print(f"Processing order detail ID: {order.id}")
-                print(f"Order_id object: {order.Order_id}")
-                print(f"Order_id.Order_id value: {order.Order_id.Order_id if order.Order_id else 'None'}")
-                print(f"Prod_id object: {order.Prod_id}")
-                print(f"Prod_id.prod_id value: {order.Prod_id.prod_id if order.Prod_id else 'None'}")
-                print(f"Prod_id.Prod_description: {order.Prod_id.Prod_description if order.Prod_id else 'None'}")
-                
-                # Create row data carefully checking each attribute
-                row_data = {
-                    'order_id': order.Order_id.Order_id if order.Order_id else "-",
-                    'product_id': order.Prod_id.prod_id if order.Prod_id else "-",
-                    'product_name': order.Prod_id.Prod_description if order.Prod_id else "-",
-                    'Image_URL': order.Prod_id.Prod_image.url if (order.Prod_id and order.Prod_id.Prod_image) else '/media/default_image.png',
-                    'Quantity': order.quantity,
-                    'User': order.User_id.username if order.User_id else "-",
-                    'Date': order.Created_date.strftime('%Y-%m-%d'),
-                    'Time': order.Created_date.strftime('%H:%M:%S'),
-                    'Approval_Status': order.Order_id.Status if order.Order_id else "Pending"
-                }
-                
-                # Print the resulting row data for debugging
-                print(f"Row data: {row_data}")
-                data.append(row_data)
+                if order.Order_id and order.Prod_id and order.User_id:
+                    data.append({
+                        'order_id': order.Order_id.Order_id,
+                        'product_id': order.Prod_id.prod_id,
+                        'product_name': order.Prod_id.Prod_description,
+                        'Image_URL': order.Prod_id.Prod_image.url if order.Prod_id.Prod_image else '/media/default_image.png',
+                        'Quantity': order.quantity,
+                        'User': order.User_id.username,
+                        'Date': order.Created_date.strftime('%Y-%m-%d'),
+                        'Time': order.Created_date.strftime('%H:%M:%S'),
+                        'Approval_Status': order.Order_id.Status
+                    })
 
             return render(request, 'admin/view_report.html', {
                 'data': data,
@@ -625,4 +613,4 @@ def view_report(request):
             })
 
     # If GET request, render the form with users
-    return render(request, 'admin/download_report.html', {'users': users})
+    return render(request, 'admin/view_report.html', {'users': users})

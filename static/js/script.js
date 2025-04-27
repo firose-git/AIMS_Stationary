@@ -62,43 +62,43 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🛒 Add to Cart Functionality
-    document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", function () {
-            let productId = this.getAttribute("data-product-id");
+    // // 🛒 Add to Cart Functionality
+    // document.querySelectorAll(".add-to-cart").forEach(button => {
+    //     button.addEventListener("click", function () {
+    //         let productId = this.getAttribute("data-product-id");
 
-            if (!productId) {
-                console.error("❌ Error: Product ID is missing!");
-                alert("Product ID is missing!");
-                return;
-            }
+    //         if (!productId) {
+    //             console.error("❌ Error: Product ID is missing!");
+    //             alert("Product ID is missing!");
+    //             return;
+    //         }
 
-            console.log(`🛒 Attempting to add Product ID: ${productId} to cart`);
+    //         console.log(`🛒 Attempting to add Product ID: ${productId} to cart`);
 
-            fetch("/cart/add/", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCSRFToken(),
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ product_id: productId })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("✅ Server Response:", data);
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error("❌ Error adding to cart:", error);
-                alert("Something went wrong! Please try again.");
-            });
-        });
-    });
+    //         fetch("/cart/add/", {
+    //             method: "POST",
+    //             headers: {
+    //                 "X-CSRFToken": getCSRFToken(),
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({ product_id: productId })
+    //         })
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error(`HTTP error! Status: ${response.status}`);
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             console.log("✅ Server Response:", data);
+    //             alert(data.message);
+    //         })
+    //         .catch(error => {
+    //             console.error("❌ Error adding to cart:", error);
+    //             alert("Something went wrong! Please try again.");
+    //         });
+    //     });
+    // });
 
     // 🔑 Function to Get CSRF Token from Cookie
     function getCSRFToken() {

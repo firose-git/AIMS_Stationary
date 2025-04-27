@@ -95,24 +95,40 @@
 {% block scripts %}
 <script>
     function addToCart(productId) {
-        fetch(`/cart/add/${productId}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({ product_id: productId })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/cart/';
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
+    fetch(`/cart/add/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ product_id: productId })
+    })
+    .then(response => {
+        if (response.redirected) {
+            // User is not logged in
+            alert('⚠ You need to log in to add items to your cart.');
+            window.location.href = response.url;  // Redirect to login page
+            throw new Error('Redirected to login');
+        }
+        if (!response.ok) {
+            throw new Error('Server error');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.message) {
+            window.location.href = data.cart_url;  // Redirect to cart
+        } else if (data.error) {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        // No need to show another alert because we already showed "Please login" above
+    });
+}
+
+
 
     function getCookie(name) {
         let cookieValue = null;
